@@ -1,0 +1,4 @@
+package com.atguigu.kemai
+
+case class Ent(_id:String,apprDate:String,category:String,checkedAt :String,compForm:String,compFormCN:String,corpStatus:String,corpStatusString:String,createdAt :String,desc:String,dom:String,domain:String,ePubGroup:String,employeesMax:String,employeesMin:String,entId:String,entName:String,entType:String,entTypeCN:String,entTypeForAnnualReport:String,entTypeForQuery:String,estDate:String,hidden:String,historyName:String,industryCo:String,industryPhy:String,legalName:String,linkmanName:String,location:String,nodeNum:String,opFrom:String,opScope  :String,opTo:String,preEntType:String,products:String,q:String,regCap:String,regCapCurCN:String,regCaption:String,regCity:String,regDistrict:String,regNo:String,regOrg:String,regOrgCn:String,regProv:String,source:String,sourceUrl:String,spider:String,systemTags:String,taxNo :String,uniscId:String,updatedAt :String)
+
