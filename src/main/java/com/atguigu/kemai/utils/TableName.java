@@ -1,0 +1,43 @@
+package com.atguigu.kemai.utils;
+
+public class TableName {
+    public static String MANGO_ENT = "ent";
+    public static String MANGO_ENT_A_TAXPAYER = "ent_a_taxpayer";
+    public static String MANGO_ENT_ABNORMAL_OPT = "ent_abnormal_opt";
+    public static String MANGO_ENT_ALTERINFO = "ent_alterinfo";
+    public static String MANGO_ENT_ANNUAL_REPORT = "ent_annual_report";
+    public static String MANGO_ENT_APPS = "ent_apps";
+    public static String MANGO_ENT_BIDS = "ent_bids";
+    public static String MANGO_ENT_BRAND = "ent_brand";
+    public static String MANGO_ENT_CERT = "ent_cert";
+    public static String MANGO_ENT_CONTACTS = "ent_contacts";
+    public static String MANGO_ENT_COPYRIGHTS = "ent_copyrights";
+    public static String MANGO_ENT_COURT_NOTICE = "ent_court_notice";
+    public static String MANGO_ENT_COURT_OPERATOR = "ent_court_operator";
+    public static String MANGO_ENT_COURT_PAPER = "ent_court_paper";
+    public static String MANGO_ENT_DISHONEST_OPERATOR = "ent_dishonesty_operator";
+    public static String MANGO_ENT_DOMAIN = "ent_domain";
+    public static String MANGO_ENT_ECOMMERCE = "ent_ecommerce";
+    public static String MANGO_ENT_EQUITY_PLEDGED = "ent_equity_pledged";
+    public static String MANGO_ENT_FUNDING_EVENT = "ent_funding_event";
+    public static String MANGO_ENT_GOODS = "ent_goods";
+    public static String MANGO_ENT_GROWINGUP = "ent_growingup";
+    public static String MANGO_ENT_INVESTCOMPANY = "ent_invest_company";
+    public static String MANGO_ENT_KEY_PERSON = "ent_key_person";
+    public static String MANGO_ENT_LICENCE = "ent_licence";
+    public static String MANGO_ENT_LISTED = "ent_listed";
+    public static String MANGO_ENT_MAIMAI = "ent_maimai";
+    public static String MANGO_ENT_NEW_MEDIA = "ent_new_media";
+    public static String MANGO_ENT_NEWS = "ent_news";
+    public static String MANGO_ENT_PATENT = "ent_patent";
+    public static String MANGO_ENT_PROMOTION = "ent_promotion";
+    public static String MANGO_ENT_PUNISHMENT = "ent_punishment";
+    public static String MANGO_ENT_RECRUIT = "ent_recruit";
+    public static String MANGO_ENT_SHAREHOLDER = "ent_shareholder";
+    public static String MANGO_ENT_SOFTWARE = "ent_software";
+    public static String MANGO_ENT_TOP500 = "ent_top500";
+    public static String MANGO_ENT_TRADEMARK = "ent_trademark";
+    public static String MANGO_ENT_WEBSITE = "ent_website";
+    public static String MANGO_ENT_WEI_BO = "ent_weibo";
+    public static String MANGO_ENT_ZHAO_DAO = "ent_zhaodao";
+}

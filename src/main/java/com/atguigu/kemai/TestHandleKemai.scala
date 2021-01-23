@@ -1,6 +1,8 @@
 package com.atguigu.kemai
 
 import com.alibaba.fastjson.{JSON, JSONObject}
+import com.atguigu.kemai.utils.JSONUtils
+import org.apache.commons.lang3.StringUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -27,14 +29,37 @@ object TestHandleKemai {
 
     val path_prefix = "hdfs://hadoop102:9820/transform/"   //jtb/61.132.230.81:8020
 
-    val inputRDD: RDD[String] = sc.textFile(path_prefix + "ent_zhaodao/*")
-    inputRDD.collect().foreach(println(_))
+    val inputRDD: RDD[String] = sc.textFile(path_prefix + "ent/*")
+    inputRDD.collect().foreach(println(_))//ent_zhaodao|{"_id":{"$oid":"5fceccb9de514381b862b42f"},...}
+
+    /**
+      * 第一步：拼接
+      * 根据entId拼接元组
+      */
+    val tupleRDD: RDD[(String, JSONObject)] = inputRDD.map(line => {
+      try {
+        val tableName = line.substring(0, line.indexOf("|")).trim()
+        val content = line.substring(line.indexOf("{"), line.length())
+        val json: JSONObject = JSONUtils.getNotNullJson(content)// 简单的数据格式处理
+        json.put("tableName", tableName);
+        val entId = json.getString("entId")
+        if (entId.equals("empty")) { // 很多entId为empty字符串的值，需过滤，否则该key会造成严重的数据倾斜
+          (null, null)
+        } else {
+          (entId, json)
+        }
+      } catch {
+        case ex: Exception => (null, null)
+      }
+    })
+      .filter(t => !StringUtils.isEmpty(t._1))
+      .filter(t => !(t._2.getString("tableName").equals("ent_invest_company") && StringUtils.isEmpty(t._2.getString("isBrunch"))))
 
 
-//    // TODO: 也可以用直接父级目录
-////    val path = "hdfs://hadoop102:9820/transform/ent/2020-12-04"
-//    import spark.implicits._
-//    // TODO: path一定要到分叉的那一层目录，否则就不不行！
+    // TODO: 也可以用直接父级目录
+//    val path = "hdfs://hadoop102:9820/transform/ent/2020-12-04"
+    import spark.implicits._
+    // TODO: path一定要到分叉的那一层目录，否则就不不行！
 //    val inputDF: DataFrame = spark.read.json(
 //			path_prefix + "ent_zhaodao/*"
 ////      			path_prefix + "ent/*", // ES索引，统计字段
@@ -108,10 +133,10 @@ object TestHandleKemai {
 //
 //		resultDF2.show(truncate = false)
 //    println(resultDF2.rdd.getNumPartitions)
-
-
+//
+//
 //    val path_prefix = "D:\\JavaRelation\\工作\\安徽创瑞\\mongoDatas\\transform\\"
-    //path不支持传string，用逗号分隔，而textFile支持
+////    path不支持传string，用逗号分隔，而textFile支持
 //    val inputDF = spark.read.format("json")
 //      .load(
 ////        path_prefix + "ent\\*",
