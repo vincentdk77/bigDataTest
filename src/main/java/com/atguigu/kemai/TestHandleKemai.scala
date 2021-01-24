@@ -16,6 +16,9 @@ import scala.collection.mutable.ArrayBuffer
 
 //case class InputData(tableName:String,jsonObj:JSONObject)
 
+/**
+ * 全量数据处理
+ */
 object TestHandleKemai {
   System.setProperty("HADOOP_USER_NAME","root")
   def main(args: Array[String]): Unit = {

@@ -1,0 +1,49 @@
+2	private String corpStatus; // #经营状态 （int） 			
+2	private String entType; // #企业类型: 数值类型			
+2	private String regOrgCn; // #注册地			
+10	private String opScope; // #经营范围			
+5	private String products; //# 主营产品			
+1	private Integer isHighTech = 0;//是否高新企业         无			
+1	private Integer isTop500 = 0;//是否500强企业         无				
+1 	private Integer isUnicorn = 0;//是否独角兽企业         无			
+1	private Integer isGazelle = 0;//是否瞪羚企业         无				
+2	private Integer isStock = 0;//是否上市企业         无			
+1	private Integer isTaxARate = 0;//是否A级纳税人         无			
+1	private Integer noLicence = 1;//有无行政许可    1:有，0：无				
+1	private Integer noInvest = 1;//有无对外投资				
+1  	private Integer noAnnualInvest = 1;//有无年报对外投资   无			
+1	private Integer noLinkedin = 1;//有无领英          无				
+1	private Integer noAnnualReport = 1;//有无企业年报				
+1	private Integer noWeibo = 1;//有无微博				
+1	private Integer noFiscalAgent = 1;//有无代理记账号码   无				
+5	private Integer noMobile = 1;//有无手机				
+2	private Integer noTel = 1;//有无固话				
+2	private Integer noEmail = 1;//有无邮箱				
+2	private Integer noDomain = 1;//有无官网				
+1	private Integer noICP = 1;//有无ICP备案				
+1	private Integer noBidding = 1;//有无招投标       无				
+1	private Integer noTradeCredit = 1;//有无进出口信用     无				
+1	private Integer noCert = 1;//有无证书				
+1	private Integer noWeMedia = 1;//有无自媒体				
+1	private Integer noWeiboOrg = 1;//有无微博机构号   无				
+1	private Integer noNews = 1;//有无新闻				
+1	private Integer noWechat = 1;//有无微信公众号				
+1	private Integer noPrmt = 1;//有无推广				
+1	private Integer noGoods = 1;//有无商品				
+1	private Integer noApp = 1;//有无应用				
+2	private Integer noBrand = 1;//有无品牌信息				
+2	private Integer noPunishment = 1;//有无行政处罚				
+2	private Integer noEquityPledge = 1;//有无股权出资				
+2	private Integer noIllegal = 1;//有无严重违法    无				
+2	private Integer noTrademark = 1;//有无商标				
+2	private Integer noPatent = 1;//有无专利				
+2	private Integer noSr = 1;//有无软著				
+2	private Integer noCr = 1;//有无作品著作权    无				
+5	private Integer noAbnomalyOpt;//有无经营异常				
+5	private String certType;    // 证书类型				
+2	private String stag;        // 融资轮次				
+5	private String industryCategory;    // 我们自己定义的行业分类				
+5	private String recruitTitleLM;      //最近1个月招聘岗位名称				
+5	private String agentType;   // 机构类型				
+					
+100					

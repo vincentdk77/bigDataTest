@@ -1,0 +1,29 @@
+
+服务节点间同步数据：
+nohup rsync -r -av --progress /home/mongodata root@192.168.0.76:/home/datanodeDir/jtb/ 2>&1 &
+上传本地日志到HDFS:
+nohup hdfs dfs -put /home/mongo113/* /mongodata/2020/11/03/ 2>&1 &
+
+日志转换
+spark-submit --class com.kemai.Transform --master spark://node11:7077 --executor-memory 16G --executor-cores 4 --total-executor-cores 60 /home/bigdata/jar/bigdata-1.2-SNAPSHOT.jar yes 2020-11-21 ent
+nohup spark-submit --class com.kemai.Transform --master spark://node11:7077 --executor-memory 12G --executor-cores 4 --total-executor-cores 80 /home/bigdata/jar/bigdata-1.2-SNAPSHOT.jar yes 2020/11/03 ent 20 >> /home/bigdata/jar/LogConvert.log 2>&1 &
+客迈全量
+r >> /home/bigdata/jar/HandleKemai.log 2>&1 &
+客迈统计
+nohup spark-submit --class com.kemai.HandleKemaiCount --master spark://node11:7077 --executor-memory 16G --executor-cores 4 --total-executor-cores 80 /home/bigdata/jar/bigdata-1.2-SNAPSHOT.jar >> /home/bigdata/jar/HandleKemaiCount.log 2>&1 &
+客迈推荐
+nohup spark-submit --class com.kemai.recommend.Recommend --master spark://node11:7077 --executor-memory 16G --executor-cores 4 --total-executor-cores 80 /home/bigdata/jar/bigdata-1.2-SNAPSHOT.jar 80 >> /home/bigdata/jar/Recommend.log 2>&1 &
+客迈增量
+nohup spark-submit --class com.kemai.HandleKemaiIncrement --master spark://node11:7077 --executor-memory 16G --executor-cores 4 --total-executor-cores 80 /home/bigdata/jar/bigdata-1.2-SNAPSHOT.jar >> /home/bigdata/jar/HandleKemaiIncrement.log 2>&1 &
+
+spark-submit --class com.kemai.Export --master spark://node11:7077 --executor-memory 12G --executor-cores 4 --total-executor-cores 60 /home/bigdata/jar/bigdata-1.2-SNAPSHOT.jar
+
+nohup mongoexport --port=28018 -u=spark -p=spark$890$3 -q='{"createdAt":{"$lt":1604419200}}' -d=ent -c=ent_bids --type=json -o=ent_bids.json > ./logs/ent_bids.log &
+
+# 全量导出
+22/11/2020 00:00:00 之前的数据：
+nohup mongoexport --uri="mongodb://spark:spark\$890\$3@192.168.0.81:28018/ent" -q='{"createdAt":{"$lt":1605974400}}' -c=ent_website --type=json -o=ent_website.json 2>&1 &
+nohup mongoexport --uri="mongodb://spark:spark\$890\$3@192.168.0.81:28018/ent" -q='{"createdAt":{"$lt":1605974400}}' -f="entId,anCheYear,pubDate" -c=ent_annual_report --type=json -o=ent_annual_report.json 2>&1 &
+nohup mongoexport --uri="mongodb://spark:spark\$890\$3@192.168.0.81:28018/ent" -c=ent_listed --type=json -o=ent_listed.json 2>&1 &
+# 增量导出
+mongoexport --uri="mongodb://spark:spark\$890\$3@192.168.0.81:28018/ent" -q='{"$or": [{"createdAt":{"$gt":1605974400,"$lt":1606060800}},{"updatedAt":{"$gt":1605974400,"$lt":1606060800}}]}' -c=ent_bids --type=json -o=ent_bids.json

@@ -17,6 +17,11 @@ public class EsHandle {
     public static Integer YES = 0;
     public static Integer No = 1;
 
+    /**
+     * 同一个企业entId，针对每一个表的数据进行单独的部分字段处理和清洗
+     * @param mangoJson
+     * @return
+     */
     public static JSONObject transforToEs(JSONObject mangoJson) {
         if (mangoJson == null) return null;
         JSONObject esJson = new JSONObject();
@@ -771,7 +776,7 @@ public class EsHandle {
 
         for (String key : mangoJson.keySet()) {
             // 企业
-            if (TableName.MANGO_ENT.equals(key)) {
+            if (TableName.MANGO_ENT.equals(key)) {  // TODO: 2021/1/24 为啥只往ent表更新数据？
                 try {
                     JSONObject ent = mangoJson.getJSONArray(key).getJSONObject(0);
                     JSONObject queryJson = new JSONObject();
