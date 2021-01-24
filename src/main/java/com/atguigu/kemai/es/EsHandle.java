@@ -28,34 +28,41 @@ public class EsHandle {
                 JSONArray newArray = new JSONArray();
 
                 for (int i = 0; i < currentArr.size(); i++) {
-                    JSONObject currentJson = currentArr.getJSONObject(i);
-                    JSONObject newJson = new JSONObject();
+                    JSONObject currentJsonObj = currentArr.getJSONObject(i);
+                    JSONObject newJsonObj = new JSONObject();
 
-                    for (String field : currentJson.keySet()) {
-                        if (StringUtils.isNotEmpty(currentJson.getString(field))) {
+                    for (String field : currentJsonObj.keySet()) {
+                        if (StringUtils.isNotEmpty(currentJsonObj.getString(field))) {
                             if (field.equals("salaryAvg")) {
                                 try {
-                                    BigDecimal bigDecimal = new BigDecimal(currentJson.getString(field));
+                                    BigDecimal bigDecimal = new BigDecimal(currentJsonObj.getString(field));
                                     double salaryAvg = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                    newJson.put(field, salaryAvg);
+                                    newJsonObj.put(field, salaryAvg);
                                 } catch (Exception e) {
                                 }
                             } else if (field.equals("location")) {
+//                                "location":{
+//                                    "type":"Point",
+//                                    "coordinates":[
+//                                        112.862525,
+//                                        35.490524
+//                                    ]
+//                                }
                                 try {
-                                    JSONObject location = JSONObject.parseObject(currentJson.getString("location"));
+                                    JSONObject location = JSONObject.parseObject(currentJsonObj.getString("location"));
                                     JSONArray coordinates = location.getJSONArray("coordinates");
                                     Double[] d = new Double[2];
                                     d[0] = Double.parseDouble(String.valueOf(coordinates.get(0)));
                                     d[1] = Double.parseDouble(String.valueOf(coordinates.get(1)));
-                                    newJson.put(field, d);
+                                    newJsonObj.put(field, d);
                                 } catch (NumberFormatException e) {
                                 }
                             } else {
-                                newJson.put(field, currentJson.getString(field));
+                                newJsonObj.put(field, currentJsonObj.getString(field));
                             }
                         }
                     }
-                    newArray.add(newJson);
+                    newArray.add(newJsonObj);
 //                        String[] fields = {
 //                                "uniscId", "entName", "corpStatus", "corpStatusString", "entType", "entTypeString", "entTypeCN", "estDate",
 //                                "apprDate", "regState", "regStateCN", "regOrgCn", "regOrg", "regCapCurCN", "regCaption", "regCap", "regNo",
@@ -157,10 +164,10 @@ public class EsHandle {
                     if (StringUtils.isNotEmpty("appUpgradeTime")) {
                         newJson.put("appUpgradeTime", currentJson.getString("appUpgradeTime"));
                     }
-                    if (StringUtils.isNotEmpty("appFraction")) {
+                    if (StringUtils.isNotEmpty(currentJson.getString("appFraction"))) {
                         newJson.put("appFraction", Double.parseDouble(currentJson.getString("appFraction")));     // 增量统计时计算
                     }
-                    if (StringUtils.isNotEmpty("appDownloadCount")) {
+                    if (StringUtils.isNotEmpty(currentJson.getString("appDownloadCount"))) {
                         newJson.put("appDownloadCount", Integer.parseInt(currentJson.getString("appDownloadCount")));   // 增量统计时计算
                     }
                     newArray.add(newJson);

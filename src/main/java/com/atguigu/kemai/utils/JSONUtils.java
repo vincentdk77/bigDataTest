@@ -1,13 +1,12 @@
 package com.atguigu.kemai.utils;
 
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class JSONUtils {
 
@@ -35,6 +34,11 @@ public class JSONUtils {
         return json;
     }
 
+    /**
+     * 解析json字符串成jsonObject，并针对“各种日期类型”字段格式进行单独过滤清洗处理
+     * @param line
+     * @return
+     */
     public static JSONObject getNotNullJson(String line) {
         JSONObject json = new JSONObject();
         try {
@@ -46,24 +50,24 @@ public class JSONUtils {
                     if (key.endsWith("Date") || key.endsWith("date") || key.endsWith("Time") || key.endsWith("time") ||
                             key.equals("valFrom") || key.equals("valTo") || key.endsWith("At") || key.endsWith("lastActive")) {
 
-                        if (key.equals("createdAt") || key.equals("updatedAt") || key.equals("checkedAt")) {
+                        if (key.equals("createdAt") || key.equals("updatedAt") || key.equals("checkedAt")) {//"updatedAt":1602630604
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            String dateStr = njson.getInteger(key).toString();  //该字段类型存在int或double，统一转Integer
+                            String dateStr = njson.getInteger(key).toString();  //todo 该字段类型存在int或double，统一转Integer (double类型可以直接解析成int类型)
                             String date = format.format(new Date(Long.parseLong(dateStr) * 1000));
                             json.put(key, date);
 
-                        } else {
+                        } else {//"estDate":"2002-09-09"
                             String str = njson.getString(key);
                             if (str.length() >= 10) {
                                 String s = str.substring(0, 10);
                                 String regex = "[0-9]{4}-[0-9]{2}-[0-9]{2}";
-                                Pattern pattern = Pattern.compile(regex);
-                                Matcher m = pattern.matcher(s);
-                                if (m.matches()) {
+//                                Pattern pattern = Pattern.compile(regex);
+//                                Matcher m = pattern.matcher(s);
+                                if (s.matches(regex)) {
                                     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                                     Date date = format.parse(s);
                                     long ts = date.getTime();
-                                    long start = format.parse("1800-01-01").getTime();
+                                    long start = format.parse("1800-01-01").getTime();//有这种不合理的数据 "createDate":"0001-01-01"
                                     if (ts >= start) {
                                         String estDate = format.format(new Date(Long.parseLong(String.valueOf(ts))));
                                         json.put(key, estDate);
@@ -81,6 +85,67 @@ public class JSONUtils {
             e.printStackTrace();
         }
         return json;
+    }
+
+    /**
+     * 解析json字符串成jsonObject，并针对“各种日期类型”字段格式进行单独过滤清洗处理
+     * @param line
+     * @return
+     */
+    public static JSONObject getNotNullJsonNew(String line) {
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = JSONObject.parseObject(line);
+            // TODO: 2021/1/24 使用新json对象来接收元素比较麻烦，可以考虑使用iterator来处理，直接移除元素 
+//            Iterator<Map.Entry<String, Object>> iterator = jsonObj.entrySet().iterator();
+//            while(iterator.hasNext()){
+//                Map.Entry<String, Object> next = iterator.next();
+//                String key = next.getKey();
+//                Object value = next.getValue();
+//                if(key.endsWith("Date")){
+//                    jsonObj.put(key, "value");
+//                }else{
+//                    iterator.remove();
+//                }
+//            }
+            for (String key : jsonObj.keySet()) {
+                if (!StringUtils.isEmpty(jsonObj.getString(key)) && !StringUtils.isEmpty(jsonObj.getString(key).trim())) {
+
+                    //对部分日期类型字段格式进行清洗过滤处理
+                    if (key.endsWith("Date") || key.endsWith("date") || key.endsWith("Time") || key.endsWith("time") ||
+                            key.equals("valFrom") || key.equals("valTo") || key.endsWith("At") || key.endsWith("lastActive")) {
+
+                        if (key.equals("createdAt") || key.equals("updatedAt") || key.equals("checkedAt")) {//"updatedAt":1602630604
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            String dateStr = jsonObj.getInteger(key).toString();  //todo 该字段类型存在int或double，统一转Integer (double类型可以直接解析成int类型)
+                            String date = format.format(new Date(Long.parseLong(dateStr) * 1000));
+                            jsonObj.put(key, date);
+
+                        } else {//"estDate":"2002-09-09"
+                            String str = jsonObj.getString(key);
+                            if (str.length() >= 10) {
+                                String s = str.substring(0, 10);
+                                String regex = "[0-9]{4}-[0-9]{2}-[0-9]{2}";
+                                if (s.matches(regex)) {
+                                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                                    Date date = format.parse(s);
+                                    Date startDate = format.parse("1800-01-01");//有这种不合理的数据 "createDate":"0001-01-01"
+                                    if (DateUtil.compare(date,startDate) > 0) {
+                                        jsonObj.put(key, s);
+                                    }else {
+                                        jsonObj.remove(key);//不要在集合遍历的时候移除元素，会报 java.util.ConcurrentModificationException！
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("爬虫日志内容:" + line);
+            e.printStackTrace();
+        }
+        return jsonObj;
     }
 
     public static JSONObject getVersion3Json(String line) {

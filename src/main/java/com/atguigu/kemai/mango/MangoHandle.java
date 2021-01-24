@@ -128,7 +128,7 @@ public class MangoHandle {
 
         if (json.getJSONArray("ent") != null) {
             JSONObject ent = json.getJSONArray("ent").getJSONObject(0);
-            String oldCategory = ent.getString("category");     //行业分类 原有字段
+            String oldCategory = ent.getString("category");     //行业分类 原有字段   "category":"专业技术服务业"
             String opScope = ent.getString("opScope");          //经营范围
             boolean isMatched = false;
 
