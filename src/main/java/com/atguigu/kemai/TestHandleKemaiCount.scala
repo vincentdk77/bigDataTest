@@ -25,7 +25,8 @@ object TestHandleKemaiCount {
         val bc_categoryList = sc.broadcast(GetCategory.getFinalCategoryList)
 
         // 读取数据
-        val fileList = Array("hdfs://jtb/transform/2020/11/03/*", "hdfs://jtb/transform/2020/11/16/*")
+        val fileList = Array("hdfs://jtb/transform/2020/11/03/*")
+//        val fileList = Array("hdfs://jtb/transform/2020/11/03/*", "hdfs://jtb/transform/2020/11/16/*")
         val inputRDD: RDD[String] = sc.textFile(fileList.mkString(","))
 
         // 根据entId拼接元组
@@ -94,7 +95,8 @@ object TestHandleKemaiCount {
             .map(MangoCount.jsonCount)
             .persist(StorageLevel.MEMORY_AND_DISK)
 
-        mongoRDD.mapPartitions(func).count()     //分区插入，减少数据库连接资源消耗
+//        mongoRDD.mapPartitions(func).count()     //分区插入，减少数据库连接资源消耗
+        mongoRDD.count()
         sc.stop()
     }
 

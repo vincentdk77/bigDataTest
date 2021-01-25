@@ -23,7 +23,7 @@ object TestHandleKemai {
   System.setProperty("HADOOP_USER_NAME","root")
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
-      .master("local")
+//      .master("local")
       .appName("TestHandleKemai")
       // TODO: 访问hdfs namenode高可用集群，设置0.0.0.0:9820，无法使用,提示没有权限！
 //      .config("fs.defaultFS", "hdfs://jtb:9820")
@@ -36,7 +36,8 @@ object TestHandleKemai {
 
     val sc = spark.sparkContext
 
-    val path_prefix = "hdfs://hadoop102:9820/transform/"   //jtb/61.132.230.81:8020
+//    val path_prefix = "hdfs://hadoop102:9820/transform/"   //jtb/61.132.230.81:8020
+    val path_prefix = "hdfs://jtb/transform/2020/11/03/"   //jtb/61.132.230.81:8020
     val fileList = Array(
       path_prefix + "ent/*", // ES索引，统计字段
       path_prefix + "ent_a_taxpayer/*", // ES索引，统计字段
@@ -65,7 +66,7 @@ object TestHandleKemai {
       path_prefix + "ent_patent/*", // ES索引，统计字段
       path_prefix + "ent_punishment/*", // ES索引，统计字段
       path_prefix + "ent_recruit/*", // ES索引，统计字段
-      path_prefix + "ent_software/*", // ES索引，统计字段
+//      path_prefix + "ent_software/*", // ES索引，统计字段
 //      path_prefix + "ent_top500/*", // 统计字段
       path_prefix + "ent_trademark/*", // ES索引，统计字段
       path_prefix + "ent_website/*", // ES索引，统计字段
@@ -164,37 +165,38 @@ object TestHandleKemai {
 
     esRDD.collect().foreach(println(_))  //很多空对象 {}
 
+    esRDD.count()
     // 往es写数据
-    esRDD.map(json => {
-      for (key <- json.keySet()) {
-        if ("ent".equals(key) ||
-          "ent_a_taxpayer".equals(key) ||
-          "ent_abnormal_opt".equals(key) ||
-          "ent_apps".equals(key) ||
-          "ent_bids".equals(key) ||
-          "ent_brand".equals(key) ||
-          "ent_cert".equals(key) ||
-          "ent_contacts".equals(key) ||
-          "ent_copyrights".equals(key) ||
-          "ent_court_notice".equals(key) ||
-          "ent_ecommerce".equals(key) ||
-          "ent_funding_event".equals(key) ||
-          "ent_goods".equals(key) ||
-          "ent_licence".equals(key) ||
-          "ent_new_media".equals(key) ||
-          "ent_news".equals(key) ||
-          "ent_patent".equals(key) ||
-          "ent_punishment".equals(key) ||
-          "ent_recruit".equals(key) ||
-          "ent_software".equals(key) ||
-          "ent_trademark".equals(key) ||
-          "ent_website".equals(key)
-        ) {
-          ElasticSearchUtil.postBatchByArray(key, json.getJSONArray(key))
-          //					ElasticSearchUtil.postBatchByArray("prod_" + key, json.getJSONArray(key))
-        }
-      }
-    }).count()
+//    esRDD.map(json => {
+//      for (key <- json.keySet()) {
+//        if ("ent".equals(key) ||
+//          "ent_a_taxpayer".equals(key) ||
+//          "ent_abnormal_opt".equals(key) ||
+//          "ent_apps".equals(key) ||
+//          "ent_bids".equals(key) ||
+//          "ent_brand".equals(key) ||
+//          "ent_cert".equals(key) ||
+//          "ent_contacts".equals(key) ||
+//          "ent_copyrights".equals(key) ||
+//          "ent_court_notice".equals(key) ||
+//          "ent_ecommerce".equals(key) ||
+//          "ent_funding_event".equals(key) ||
+//          "ent_goods".equals(key) ||
+//          "ent_licence".equals(key) ||
+//          "ent_new_media".equals(key) ||
+//          "ent_news".equals(key) ||
+//          "ent_patent".equals(key) ||
+//          "ent_punishment".equals(key) ||
+//          "ent_recruit".equals(key) ||
+//          "ent_software".equals(key) ||
+//          "ent_trademark".equals(key) ||
+//          "ent_website".equals(key)
+//        ) {
+//          ElasticSearchUtil.postBatchByArray(key, json.getJSONArray(key))
+//          //					ElasticSearchUtil.postBatchByArray("prod_" + key, json.getJSONArray(key))
+//        }
+//      }
+//    }).count()
 
 
 

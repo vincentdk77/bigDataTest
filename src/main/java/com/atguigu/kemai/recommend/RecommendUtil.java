@@ -41,6 +41,7 @@ public class RecommendUtil {
                 String entId2 = json2.getString("entId");
 
                 //存放指定json计算出的前100个相似度分数超过score的json的集合
+                // TODO: 2021/1/25 这样做肯定不行！要按照平分从高到低的顺序取topN
                 if (similarList.size() >= 300) {
                     break;
                 }
@@ -50,15 +51,15 @@ public class RecommendUtil {
 
                     //若计算的总分大于score：
                     if (finalSimilar > score) {
-                        String s = String.format("%.2f", finalSimilar);
-                        similarList.add(entId2 + "|" + s);
+                        String fScore = String.format("%.2f", finalSimilar);
+                        similarList.add(entId2 + "|" + fScore);
 
                         if (map.get(entId2) == null) {
                             HashSet<String> similarList1 = new HashSet<String>();
-                            similarList1.add(entId1 + "|" + s);
+                            similarList1.add(entId1 + "|" + fScore);
                             map.put(entId2, similarList1);
                         } else {
-                            map.get(entId2).add(entId1 + "|" + s);
+                            map.get(entId2).add(entId1 + "|" + fScore);
                         }
                     }
                 }
@@ -78,6 +79,8 @@ public class RecommendUtil {
      * ent_cert
      * ent_recruit
      * ent_domain
+     *
+     * 根据多个字段分别求相似度，然后根据每个字段的权重，加权得到最终的两个企业的相似度
      */
     private static Double getFinalSimilar(JSONObject json, JSONObject json2) {
         // json1的属性字段
@@ -202,7 +205,7 @@ public class RecommendUtil {
             entTypeCN = 1;
         }
 
-        //根据权重，计算各个维度的总分
+        //根据权重，计算各个维度的总分  todo 这些权重系数是怎么来的？
         double finalSimilar = 50 * scope +
                 10 * products +
                 4 * regCaption +
