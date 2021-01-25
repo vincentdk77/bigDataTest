@@ -23,7 +23,7 @@ object TestHandleKemai {
   System.setProperty("HADOOP_USER_NAME","root")
   def main(args: Array[String]): Unit = {
     val spark = SparkSession.builder()
-      .master("local")
+//      .master("local")
       .appName("TestHandleKemai")
       // TODO: 访问hdfs namenode高可用集群，设置0.0.0.0:9820，无法使用,提示没有权限！
 //      .config("fs.defaultFS", "hdfs://jtb:9820")

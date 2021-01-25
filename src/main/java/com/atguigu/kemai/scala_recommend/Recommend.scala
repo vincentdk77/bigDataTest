@@ -246,7 +246,7 @@ object Recommend {
 				else {
 					(words(0), json)
 				}
-			} else {
+			} else { // TODO: 读的json必须要有industryCategory字段且值不为空，否则都置成了(null, null) ?
 				(null, null)
 			}
 		})
@@ -258,42 +258,49 @@ object Recommend {
 		//		println("--------------------------------------------------分类--------------------------------------------------")
 		//		map.foreach(println)
 
-		val similarRDD = mongoRDD.groupByKey().flatMap(t => {
+		//根据“行业分类”分组
+		val similarRDD: RDD[(String, util.HashSet[String])] = mongoRDD.groupByKey().flatMap { case (categoryName, iter) => {
 			val list = new util.ArrayList[JSONObject]()
-			for (json <- t._2) {
-				list.add(json)
+			for (jsonObj <- iter) {
+				list.add(jsonObj)
 			}
 			// 返回相似企业集合
 			val map: util.Map[String, util.HashSet[String]] = RecommendUtil.getRecommend(list, bc_score.value)
 			val array = new Array[(String, util.HashSet[String])](map.size());
 			var i = 0;
-			for (key <- map.keySet()) {
-				array(i) = (key, map.get(key))
+			for (entId <- map.keySet()) {
+				array(i) = (entId, map.get(entId))
 				i = i + 1
 			}
 			array
-		})
+		}}
 
 		similarRDD.mapPartitions(similarFunc).count()
 		sc.stop()
 	}
 
+	/**
+	 * 相似企业数据，存入Mongo
+	 * @param iter
+	 * @return
+	 */
 	def similarFunc(iter: Iterator[(String, util.HashSet[String])]): Iterator[(String, util.HashSet[String])] = {
 		var index: Int = 0
 		var map: util.Map[String, util.Collection[JSONObject]] = new util.HashMap[String, util.Collection[JSONObject]]
 		var list: util.List[JSONObject] = new util.ArrayList[JSONObject]
 
 		while (iter.hasNext) {
-			val e = iter.next;
+			val e: (String, util.HashSet[String]) = iter.next
 			val entId = e._1
-			val similarId = e._2.toString
+			val similarIdAndScore: String = e._2.toString
 			var json = new JSONObject()
 			json.put("_id", new ObjectId(entId)) // 将entId作为主键
 			json.put("entId", entId)
-			json.put("similarId", similarId)
+			json.put("similarId", similarIdAndScore)
 			list.add(json)
 			index = index + 1
 
+			//每500条存一次
 			if (index % 500 == 0) {
 				map.put("ent_similar_70", list)
 				MongoUtils.batchInsert(map)
