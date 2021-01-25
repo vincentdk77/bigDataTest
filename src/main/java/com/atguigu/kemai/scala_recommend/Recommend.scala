@@ -136,7 +136,7 @@ object Recommend {
 			//					false
 			//				}
 			//			})
-			.coalesce(240, shuffle = true) //缩减分区数，让每个分区数据量相对均匀
+			.coalesce(240, shuffle = true) //缩减分区数，让每个分区数据量相对均匀  todo	一般合并分区数不需要进行shuffle
 
 		println("--------------------------------------------------jsonRDD--------------------------------------------------")
 
@@ -258,6 +258,7 @@ object Recommend {
 		//		println("--------------------------------------------------分类--------------------------------------------------")
 		//		map.foreach(println)
 
+		//按照“行业分类”进行分组
 		val similarRDD = mongoRDD.groupByKey().flatMap(t => {
 			val list = new util.ArrayList[JSONObject]()
 			for (json <- t._2) {
