@@ -3,7 +3,7 @@ package com.atguigu.kemai
 import com.alibaba.fastjson.{JSONArray, JSONObject}
 import com.atguigu.kemai.mango.{MangoCount, MangoHandle, MongoUtils}
 import com.atguigu.kemai.recommend.GetCategory
-import com.atguigu.kemai.utils.JSONUtils
+import com.atguigu.kemai.utils.{ConnectionConstant, JSONUtils}
 import org.apache.commons.lang3.StringUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
@@ -25,8 +25,9 @@ object TestHandleKemaiCount {
         val bc_categoryList = sc.broadcast(GetCategory.getFinalCategoryList)
 
         // 读取数据
-        val fileList = Array("hdfs://jtb/transform/2020/11/03/*")
-//        val fileList = Array("hdfs://jtb/transform/2020/11/03/*", "hdfs://jtb/transform/2020/11/16/*")
+        val fileList = Array(ConnectionConstant.HDFS_URL+"/transform/2020/11/03/*")
+//        val fileList = Array(ConnectionConstant.HDFS_URL+"/transform/2020/11/03/*",
+//                                ConnectionConstant.HDFS_URL+"/transform/2020/11/16/*")
         val inputRDD: RDD[String] = sc.textFile(fileList.mkString(","))
 
         // 根据entId拼接元组

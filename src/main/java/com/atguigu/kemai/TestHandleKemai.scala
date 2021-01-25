@@ -4,7 +4,7 @@ import com.alibaba.fastjson.{JSON, JSONArray, JSONObject}
 import com.atguigu.kemai.es.{ElasticSearchUtil, EsHandle}
 import com.atguigu.kemai.mango.MangoHandle
 import com.atguigu.kemai.recommend.{CategoryItem, GetCategory}
-import com.atguigu.kemai.utils.JSONUtils
+import com.atguigu.kemai.utils.{ConnectionConstant, JSONUtils}
 import org.apache.commons.lang3.StringUtils
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
@@ -26,18 +26,12 @@ object TestHandleKemai {
 //      .master("local")
       .appName("TestHandleKemai")
       // TODO: 访问hdfs namenode高可用集群，设置0.0.0.0:9820，无法使用,提示没有权限！
-//      .config("fs.defaultFS", "hdfs://jtb:9820")
-//      .config("dfs.nameservices", "jtb")
-//      .config("dfs.ha.namenodes.jtb", "nn1,nn2")
-//      .config("dfs.namenode.rpc-address.jtb.nn1", "node11:9820")
-//      .config("dfs.namenode.rpc-address.jtb.nn2", "node12:9820")
-//      .config("dfs.client.failover.proxy.provider.jtb", "org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider")
       .getOrCreate()
 
     val sc = spark.sparkContext
 
-//    val path_prefix = "hdfs://hadoop102:9820/transform/"   //jtb/61.132.230.81:8020
-    val path_prefix = "hdfs://jtb/transform/2020/11/03/"   //jtb/61.132.230.81:8020
+//    val path_prefix = ConnectionConstant.HDFS_URL+"/transform/"   //jtb/61.132.230.81:8020
+    val path_prefix = ConnectionConstant.HDFS_URL+"/transform/2020/11/03/"   //jtb/61.132.230.81:8020
     val fileList = Array(
       path_prefix + "ent/*", // ES索引，统计字段
       path_prefix + "ent_a_taxpayer/*", // ES索引，统计字段
@@ -213,7 +207,7 @@ object TestHandleKemai {
 
 
     // TODO: 也可以用直接父级目录
-//    val path = "hdfs://hadoop102:9820/transform/ent/2020-12-04"
+//    val path = ConnectionConstant.HDFS_URL+"/transform/ent/2020-12-04"
     import spark.implicits._
     // TODO: path一定要到分叉的那一层目录，否则就不不行！
 //    val inputDF: DataFrame = spark.read.json(
