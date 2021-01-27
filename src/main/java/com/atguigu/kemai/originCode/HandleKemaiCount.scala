@@ -102,7 +102,7 @@ object HandleKemaiCount {
             list.add(json)
             index = index + 1
             if (index % 2000 == 0) {    //每2000个插入1次
-                MongoUtils.batchInsertList(list)
+                MongoUtils.batchInsertList(list) // TODO: 这里其实调的不是批量存储的方法，使用的是循环插入的方式，不可取！
                 list.clear()
             }
         }

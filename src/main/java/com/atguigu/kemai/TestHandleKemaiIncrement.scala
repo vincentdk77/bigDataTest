@@ -14,6 +14,7 @@ import java.util
 
 /**
  * 增量数据处理
+ * 与全量处理的区别仅仅在于：数据源大小、往ES存数据的方式（增量处理是插入或者更新）
  */
 object TestHandleKemaiIncrement {
 	def main(args: Array[String]): Unit = {

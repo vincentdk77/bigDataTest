@@ -69,6 +69,7 @@ object HandleKemaiTest {
         .map { case (tableName, array: Array[(String, JSONObject)]) => {
           val resultArray: Array[JSONObject] = array.map(_._2)
           try{
+            // TODO: 将json对象的数组，转成JSONArray
             val jsonArray: JSONArray = JSON.parseArray(JSON.toJSONString(resultArray,SerializerFeature.QuoteFieldNames))
             resultJsonObj.put(tableName, jsonArray)
           }catch{
@@ -87,6 +88,8 @@ object HandleKemaiTest {
 
     val destPath: String = ConnectionConstant.HDFS_URL + "/destPath"
     resultRDD.saveAsTextFile(destPath)
+
+    //todo  保存到ES
 
 
 //    inputDF.show()

@@ -27,6 +27,11 @@ object Test {
     val  tableNametuples = Array(("a",1),("a",2),("a",3),("b",2),("b",2),("c",2))
     tableNametuples.groupBy(a=>a._1).foreach(a=>println(a._1+" "+a._2.mkString(",")))
 
+
+    val list = List(1,2,3,4,5)
+    val str = "1,2,3,4,5"
+    println(list.mkString(",").equals(str))//true
+
   }
 
 }
