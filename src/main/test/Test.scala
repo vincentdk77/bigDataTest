@@ -24,6 +24,9 @@ object Test {
     val entId = jsonObj.getString("entId")
     println(entId)
 
+    val  tableNametuples = Array(("a",1),("a",2),("a",3),("b",2),("b",2),("c",2))
+    tableNametuples.groupBy(a=>a._1).foreach(a=>println(a._1+" "+a._2.mkString(",")))
+
   }
 
 }
