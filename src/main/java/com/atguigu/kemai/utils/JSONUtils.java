@@ -96,7 +96,7 @@ public class JSONUtils {
         JSONObject jsonObj = null;
         try {
             jsonObj = JSONObject.parseObject(line);
-            // TODO: 2021/1/24 使用新json对象来接收元素比较麻烦，可以考虑使用iterator来处理，直接移除元素 
+            // TODO: 2021/1/24 使用新json对象来接收元素比较麻烦，可以考虑使用iterator来处理，直接移除元素 （不能在遍历的时候移除！否则会报modify Exception）
 //            Iterator<Map.Entry<String, Object>> iterator = jsonObj.entrySet().iterator();
 //            while(iterator.hasNext()){
 //                Map.Entry<String, Object> next = iterator.next();
@@ -117,7 +117,7 @@ public class JSONUtils {
 
                         if (key.equals("createdAt") || key.equals("updatedAt") || key.equals("checkedAt")) {//"updatedAt":1602630604
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            String dateStr = jsonObj.getInteger(key).toString();  //todo 该字段类型存在int或double，统一转Integer (double类型可以直接解析成int类型)
+                            String dateStr = jsonObj.getInteger(key).toString();
                             String date = format.format(new Date(Long.parseLong(dateStr) * 1000));
                             jsonObj.put(key, date);
 

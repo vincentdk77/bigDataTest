@@ -14,12 +14,13 @@ object HandleKemaiTest {
   def main(args: Array[String]): Unit = {
 
     val spark = SparkSession.builder().appName("HandleKemaiTest")
-//      .master("local[*]")
+      .master("local[*]")
       .getOrCreate()
 
     val sc = spark.sparkContext
 
-    val path = ConnectionConstant.HDFS_URL + "/transform/" + "2020/11/03/*"
+    val path = ConnectionConstant.HDFS_URL + "/transform/" + "2021/01/07/*"
+//    val path = ConnectionConstant.HDFS_URL + "/transform/" + "2020/11/03/*"
 
 //    val inputDF: DataFrame = spark.read.text(path)
 //    println(inputDF.rdd.getNumPartitions)  //9个分区
@@ -30,7 +31,7 @@ object HandleKemaiTest {
     //转换成元组 （entId为key）
     val entIdTupleRDD: RDD[(String, JSONObject)] = inputRDD.map(str => {
 
-//      val array = str.split("\\|")// todo 不能用这种方式来处理，因为后面可能也会有"|"字符
+//      val array = str.split("\\|")//不能用这种方式来处理，因为后面可能也会有"|"字符
 //      val tableName = array(0)
 //      val jsonStr = array(1)
       val tableName = str.substring(0,str.indexOf("|"))
@@ -59,8 +60,6 @@ object HandleKemaiTest {
 
       val tableNametuples: Array[(String, JSONObject)] = iter.toArray.map(jsonObj => {
         val tableName: String = jsonObj.getString("tableName")
-        // TODO: 将iter转成大json，每一个元素为tableName为key的jsonArray
-        //        resultJsonObj.put(tableName,array)
         (tableName, jsonObj)
       })
 
@@ -69,7 +68,7 @@ object HandleKemaiTest {
         .map { case (tableName, array: Array[(String, JSONObject)]) => {
           val resultArray: Array[JSONObject] = array.map(_._2)
           try{
-            // TODO: 将json对象的数组，转成JSONArray
+            //将json对象的数组，转成JSONArray
             val jsonArray: JSONArray = JSON.parseArray(JSON.toJSONString(resultArray,SerializerFeature.QuoteFieldNames))
             resultJsonObj.put(tableName, jsonArray)
           }catch{
@@ -83,10 +82,14 @@ object HandleKemaiTest {
 
       resultJsonObj
     }}
+    .filter(_.getJSONArray("ent") != null)
+    .filter(_.size()>1)
+    .cache()
 
+    println("共"+resultRDD.count()+"条数据!")
     resultRDD.take(20).foreach(println)
 
-    val destPath: String = ConnectionConstant.HDFS_URL + "/destPath"
+    val destPath: String = ConnectionConstant.HDFS_URL + "/destPath/2021-01-07"
     resultRDD.saveAsTextFile(destPath)
 
     //todo  保存到ES

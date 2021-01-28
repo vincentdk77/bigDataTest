@@ -108,13 +108,13 @@ object TestHandleKemaiCount {
             list.add(json)
             index = index + 1
             if (index % 2000 == 0) {    //每2000个插入1次
-                MongoUtils.batchInsertList(list)
+                MongoUtils.batchInsertListNew(list)
                 list.clear()
             }
         }
         //若最后一批不足2000，将添加到list的json一起插入mongo
         if (list.size() > 0) {
-            MongoUtils.batchInsertList(list)
+            MongoUtils.batchInsertListNew(list)
         }
         iter
     }

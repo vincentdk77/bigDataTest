@@ -60,7 +60,7 @@ object TransformTest {
 //					.map(row=>tableName + "|" + row.toString())
 ////				df.show(truncate = false)
 //				df.rdd.take(20).foreach(println)
-//				// TODO: 为什么DF写出来的是这样的格式
+//				// 为什么DF写出来的是这样的格式 因为Row的toString方法重写了，格式就是这样
 //				//{"value":"ent_a_taxpayer|[A,[5f44d97d4c323186fb817c4e],empty,淮北龙旺实业有限公司,国家税务总局淮北市烈山区税务局,信用安徽,http://credit.ah.gov.cn/remote/1480/index_2.htm,91340600754858206W,2019]"}
 ////				df.write.json(ConnectionConstant.HDFS_URL+"/transform/" + tableName + "/2021-01-26")
 //			})

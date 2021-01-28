@@ -102,13 +102,13 @@ object HandleKemaiCount {
             list.add(json)
             index = index + 1
             if (index % 2000 == 0) {    //每2000个插入1次
-                MongoUtils.batchInsertList(list) // TODO: 这里其实调的不是批量存储的方法，使用的是循环插入的方式，不可取！
+                MongoUtils.batchInsertListNew(list)
                 list.clear()
             }
         }
         //若最后一批不足2000，将添加到list的json一起插入mongo
         if (list.size() > 0) {
-            MongoUtils.batchInsertList(list)
+            MongoUtils.batchInsertListNew(list)
         }
         iter
     }

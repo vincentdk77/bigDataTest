@@ -30,6 +30,8 @@ object TestHandleKemai {
 
     val sc = spark.sparkContext
 
+    // TODO: 也可以用直接父级目录
+    // TODO: path一定要到分叉的那一层目录，否则就不不行！
 //    val path_prefix = ConnectionConstant.HDFS_URL+"/transform/"   //jtb/61.132.230.81:8020
     val path_prefix = ConnectionConstant.HDFS_URL+"/transform/2020/11/03/"   //jtb/61.132.230.81:8020
     val fileList = Array(
@@ -191,126 +193,6 @@ object TestHandleKemai {
 //        }
 //      }
 //    }).count()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // TODO: 也可以用直接父级目录
-//    val path = ConnectionConstant.HDFS_URL+"/transform/ent/2020-12-04"
-    import spark.implicits._
-    // TODO: path一定要到分叉的那一层目录，否则就不不行！
-//    val inputDF: DataFrame = spark.read.json(
-//			path_prefix + "ent_zhaodao/*"
-////      			path_prefix + "ent/*", // ES索引，统计字段
-////      			path_prefix + "ent_a_taxpayer/*", // ES索引，统计字段
-////      			path_prefix + "ent_abnormal_opt/*", // ES索引
-////      			path_prefix + "ent_annual_report/*", // 统计字段
-////      			path_prefix + "ent_apps/*", // ES索引，统计字段
-////      			path_prefix + "ent_bids/*", // ES索引
-////      			path_prefix + "ent_brand/*", // ES索引
-////      			path_prefix + "ent_cert/*", // ES索引，统计字段
-////      			path_prefix + "ent_contacts/*", // ES索引，统计字段
-////      			path_prefix + "ent_copyrights/*", // ES索引
-////      			path_prefix + "ent_court_notice/*", // 统计字段
-////      			path_prefix + "ent_court_operator/*", // ES索引
-////      			path_prefix + "ent_court_paper/*", // 统计字段
-////      			path_prefix + "ent_dishonesty_operator/*", //
-////      			path_prefix + "ent_ecommerce/*", // ES索引，统计字段
-////      			path_prefix + "ent_equity_pledged/*", // 统计字段
-////      			path_prefix + "ent_funding_event/*", // ES索引
-////      			path_prefix + "ent_goods/*", // ES索引
-////      			path_prefix + "ent_invest_company/*", // 统计字段
-////      			path_prefix + "ent_licence/*", // ES索引，统计字段
-////      			path_prefix + "ent_new_media/*", // ES索引，统计字段
-////      			path_prefix + "ent_news/*", // ES索引，统计字段
-////      			path_prefix + "ent_patent/*", // ES索引，统计字段
-////      			path_prefix + "ent_punishment/*", // ES索引，统计字段
-////      			path_prefix + "ent_recruit/*", // ES索引，统计字段
-////      			path_prefix + "ent_software/*", // ES索引，统计字段
-////      			path_prefix + "ent_trademark/*", // ES索引，统计字段
-////      			path_prefix + "ent_website/*", // ES索引，统计字段
-////      			path_prefix + "ent_maimai/*", //
-////      			path_prefix + "ent_zhaodao/*" //
-//    ).cache()
-//
-//		val resultDF2 = inputDF.rdd
-////			.map(row =>{
-////				//        import scala.collection.JavaConversions._
-////					println("===================="+row.toString())
-////					val strings: Array[String] = row.toString().split("\\|")
-////					val tableName = strings(0).substring(1)
-////					val jsonStr = strings(1).substring(0, strings(1).length - 1)
-////					val jsonObj: JSONObject = JSON.parseObject(jsonStr)
-////					//        InputData(tableName,jsonObj)
-////				(tableName,jsonStr)
-////			})
-//      .mapPartitions(iter =>{
-////        import scala.collection.JavaConversions._
-//        val arrayBuffer = ArrayBuffer[InputData]()
-//        for(row <- iter){
-//          println("===================="+row.toString())
-//					val str = row.toString()
-//					val tableName = str.substring(1,str.indexOf("|"))//去掉第一个[
-//					val jsonStr = str.substring(str.indexOf("|")+1,str.length-1)//去掉最后一个]
-////					println(tableName+" "+jsonStr)
-//					val jsonObj: JSONObject = JSON.parseObject(jsonStr)
-////					try{
-////
-////					}catch{
-////						case e:Exception => {
-////							e.printStackTrace()
-////							println("****************=:"+row.toString())
-////						}
-////					}
-//          //        InputData(tableName,jsonObj)
-////					arrayBuffer.append((tableName,jsonStr))
-//					arrayBuffer.append(InputData(tableName,jsonObj))
-//        }
-//				arrayBuffer.iterator
-//      })
-//    .toDF("tableName","jsonStr")
-//
-//		resultDF2.show(truncate = false)
-//    println(resultDF2.rdd.getNumPartitions)
-//
-//
-//    val path_prefix = "D:\\JavaRelation\\工作\\安徽创瑞\\mongoDatas\\transform\\"
-////    path不支持传string，用逗号分隔，而textFile支持
-//    val inputDF = spark.read.format("json")
-//      .load(
-////        path_prefix + "ent\\*",
-//        path_prefix + "ent_top500\\*"
-//      )
-//      .rdd
-//      .map(row=>{
-////        println(row.toString())
-//        val strings: Array[String] = row.toString().split("\\|")
-//        val tableName = strings(0).substring(1)
-//        val jsonStr = strings(1).substring(0, strings(1).length - 1)
-//        val jsonObj: JSONObject = JSON.parseObject(jsonStr)
-////        InputData(tableName,jsonObj)
-//        (tableName,jsonStr)
-//      })
-//      .toDF("tableName","jsonStr")
-//
-//    println("=======================================================================")
-//    inputDF.show(truncate = false)
-////    inputDF.collect.foreach(println(_))
-//    println("=======================================================================")
-
-
-
 
     spark.stop()
   }
