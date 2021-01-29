@@ -32,20 +32,20 @@ object TransformTest {
 //			})
 //		}
 
-		val inputRDD  = sc.textFile(ConnectionConstant.HDFS_URL+"/mongodata/ent_c*.json")//一行数据构成一个RDD的元素
+		val inputRDD  = sc.textFile(ConnectionConstant.HDFS_URL+"/mongodata/2020/11/03/ent_a_taxpayer.json")//一行数据构成一个RDD的元素
 		println("inputRDD元素个数："+inputRDD.count())//300000
 		println(inputRDD.getNumPartitions)//有30个分区,local模式, todo 为啥不是60个呢？
 
-		val inputWholeRDD = sc.wholeTextFiles(ConnectionConstant.HDFS_URL+"/mongodata")//一个文件构成一个RDD的元素
-		println("inputWholeRDD元素个数："+inputWholeRDD.count())//30
+//		val inputWholeRDD = sc.wholeTextFiles(ConnectionConstant.HDFS_URL+"/mongodata")//一个文件构成一个RDD的元素
+//		println("inputWholeRDD元素个数："+inputWholeRDD.count())//30
 
-		println(inputWholeRDD.getNumPartitions)//只有两个分区,local模式
-
-		val mapRDD = inputWholeRDD.map{case (path,json) =>{
-				val tableName = path.substring(path.lastIndexOf("/")+1,path.indexOf("."))
-//			println(tableName)
-				(tableName,json)
-		}}
+//		println(inputWholeRDD.getNumPartitions)//只有两个分区,local模式
+//
+//		val mapRDD = inputWholeRDD.map{case (path,json) =>{
+//				val tableName = path.substring(path.lastIndexOf("/")+1,path.indexOf("."))
+////			println(tableName)
+//				(tableName,json)
+//		}}
 //			.saveAsTextFile(ConnectionConstant.HDFS_URL+"/transform/"+"2020/11/03/"+ tableName)
 
 
