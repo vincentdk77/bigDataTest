@@ -221,11 +221,11 @@ public class MangoHandle {
 
             if (StringUtils.isEmpty(products)) {
                 if (json.getJSONArray(TableName.MANGO_ENT_WEBSITE) != null && json.getJSONArray(TableName.MANGO_ENT_WEBSITE).size() > 0) {
-                    JSONArray websiteArray = json.getJSONArray("ent_website");
+                    JSONArray websiteArray = json.getJSONArray("ent_website");//网站表
 
                     for (int i = 0; i < websiteArray.size(); i++) {
                         try {
-                            String domainKeyword = websiteArray.getJSONObject(i).getString("domainKeyword");
+                            String domainKeyword = websiteArray.getJSONObject(i).getString("domainKeyword");//关键词
                             if (!StringUtils.isEmpty(domainKeyword) && !domainKeyword.contains("请填写站点关键词")) {
                                 String[] words = domainKeyword.replace("-", "")
                                         .replace("★", "")
@@ -260,7 +260,7 @@ public class MangoHandle {
 
         if (json.getJSONArray("ent") != null) {
             JSONObject ent = json.getJSONArray("ent").getJSONObject(0);
-            String corpStatusString = ent.getString("corpStatusString");
+            String corpStatusString = ent.getString("corpStatusString");//经营状态字符 :存续（在营、开业、在册）
 
             if (StringUtils.isNotEmpty(corpStatusString)) {
                 if (corpStatusString.startsWith("存续") || corpStatusString.startsWith("在业") || corpStatusString.startsWith("吊销") || corpStatusString.startsWith("注销") ||
@@ -285,11 +285,11 @@ public class MangoHandle {
 
         if (json.getJSONArray("ent") != null) {
             JSONObject ent = json.getJSONArray("ent").getJSONObject(0);
-            String entTypeCN = ent.getString("entTypeCN");
+            String entTypeCN = ent.getString("entTypeCN");//企业类型中文描述
 
             if (StringUtils.isNotEmpty(entTypeCN)) {
                 //1、港澳台
-                if (StringUtils.isEmpty(ent.getString("agentType"))) {
+                if (StringUtils.isEmpty(ent.getString("agentType"))) {//企业类型
                     String[] gangaotai = Constant.gangaotai.toString().split("#");
                     for (String s : gangaotai) {
                         if (entTypeCN.contains(s)) {
@@ -407,7 +407,7 @@ public class MangoHandle {
 
         if (json.getJSONArray("ent") != null) {
             JSONObject ent = json.getJSONArray("ent").getJSONObject(0);
-            if (!StringUtils.isEmpty(ent.getString("regCaption"))) {
+            if (!StringUtils.isEmpty(ent.getString("regCaption"))) {//注册资本数值
                 try {
                     BigDecimal bigDecimal = new BigDecimal(ent.getString("regCaption"));
                     BigDecimal regCaption = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -416,7 +416,7 @@ public class MangoHandle {
                     ent.put("regCaption", null);
                 }
             }
-            if (!StringUtils.isEmpty(ent.getString("employeesMin"))) {
+            if (!StringUtils.isEmpty(ent.getString("employeesMin"))) {//雇员人数最小值
                 try {
                     Integer employeesMin = Integer.valueOf(ent.getString("employeesMin"));
                     ent.put("employeesMin", employeesMin);
@@ -424,7 +424,7 @@ public class MangoHandle {
                     ent.put("employeesMin", null);
                 }
             }
-            if (!StringUtils.isEmpty(ent.getString("employeesMax"))) {
+            if (!StringUtils.isEmpty(ent.getString("employeesMax"))) {//雇员人数最大值
                 try {
                     Integer employeesMax = Integer.valueOf(ent.getString("employeesMax"));
                     ent.put("employeesMax", employeesMax);
@@ -774,7 +774,7 @@ public class MangoHandle {
 
                     for (int i = 0; i < currentArray.size(); i++) {
                         JSONObject currentJson = currentArray.getJSONObject(i);
-                        if (StringUtils.isNotEmpty(currentJson.getString("brunch"))) {
+                        if (StringUtils.isNotEmpty(currentJson.getString("brunch")) && StringUtils.isNotEmpty(currentJson.getString("isBrunch"))) {
                             if (currentJson.getString("isBrunch").equals("1")) {
                                 branchCount++;
                             }

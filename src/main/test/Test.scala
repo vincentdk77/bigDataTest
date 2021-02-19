@@ -1,4 +1,6 @@
 import com.alibaba.fastjson.{JSON, JSONObject}
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.SparkSession
 
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -31,6 +33,10 @@ object Test {
     val list = List(1,2,3,4,5)
     val str = "1,2,3,4,5"
     println(list.mkString(",").equals(str))//true
+
+    tableNametuples.toList.groupBy(_._1).foreach(println(_))
+
+
 
   }
 

@@ -3,6 +3,7 @@ package com.atguigu.kemai.test
 import com.alibaba.fastjson.serializer.SerializerFeature
 import com.alibaba.fastjson.{JSON, JSONArray, JSONException, JSONObject}
 import com.atguigu.kemai.utils.ConnectionConstant
+import org.apache.commons.lang3.StringUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -43,15 +44,22 @@ object HandleKemaiTest {
         jsonObj = JSON.parseObject(jsonStr)
         jsonObj.put("tableName",tableName)
         entId = jsonObj.getString("entId")
+        if (entId.equals("empty")) { // 很多entId为empty字符串的值，需过滤，否则该key会造成严重的数据倾斜
+          (null, null)
+        } else {
+          (entId, jsonObj)
+        }
       }catch{
-        case e:JSONException => {
+        case e:Exception => {
           println("异常str："+str)
           println("异常JSON："+jsonStr)
           e.printStackTrace()
+          (null, null)
         }
       }
-      (entId, jsonObj)
+//      (entId, jsonObj)
     })
+      .filter(a =>StringUtils.isNotBlank(a._1))
 
     //根据entId分组
     //格式：{"ent": [{"entId": "5eaa3d2d581f7afded866558",...}，...}]，"ent_recruit": [{"entId": "5eaa3d2d581f7afded866558",...}],...}

@@ -3,7 +3,7 @@ package com.atguigu.kemai
 import com.alibaba.fastjson.{JSONArray, JSONObject}
 import com.atguigu.kemai.mango.{MangoCount, MangoHandle, MongoUtils}
 import com.atguigu.kemai.recommend.GetCategory
-import com.atguigu.kemai.utils.{ConnectionConstant, JSONUtils}
+import com.atguigu.kemai.utils.{ConnectionConstant, JSONUtils, TableCountHandle}
 import org.apache.commons.lang3.StringUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.storage.StorageLevel
@@ -96,12 +96,33 @@ object TestHandleKemaiCount {
             .map(MangoCount.jsonCount)
             .persist(StorageLevel.MEMORY_AND_DISK)
 
-//        mongoRDD.mapPartitions(func).count()     //分区插入，减少数据库连接资源消耗
-        mongoRDD.count()
+        val esRDD: RDD[JSONObject] = jsonRDD.map(TableCountHandle.count)
+        //			.map(TableCountHandle.countFields)
+
+//        esRDD.mapPartitions(func).count()
+        esRDD.foreachPartition(funcNew)
         sc.stop()
     }
 
     def func(iter: Iterator[JSONObject]): Iterator[JSONObject] = {
+        var index = 0
+        var list: util.ArrayList[JSONObject] = new util.ArrayList[JSONObject]
+        for (json <- iter) {
+            list.add(json)
+            index = index + 1
+            if (index % 2000 == 0) {    //每2000个插入1次
+                MongoUtils.batchInsertListNew(list)
+                list.clear()
+            }
+        }
+        //若最后一批不足2000，将添加到list的json一起插入mongo
+        if (list.size() > 0) {
+            MongoUtils.batchInsertListNew(list)
+        }
+        iter
+    }
+
+    def funcNew(iter: Iterator[JSONObject]): Iterator[JSONObject] = {
         var index = 0
         var list: util.ArrayList[JSONObject] = new util.ArrayList[JSONObject]
         for (json <- iter) {

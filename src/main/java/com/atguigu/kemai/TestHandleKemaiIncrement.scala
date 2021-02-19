@@ -131,7 +131,7 @@ object TestHandleKemaiIncrement {
 		//		}
 
 		// 往es写数据
-//		esRDD.map(EsHandle.upsertEnt).count()
+		esRDD.map(EsHandle.upsertEnt).count()
 		esRDD.count()
 		sc.stop()
 	}
